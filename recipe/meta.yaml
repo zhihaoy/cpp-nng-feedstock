@@ -1,0 +1,45 @@
+{% set version = "32d1751" %}
+{% set sha256 = "699950244b9413e2d7454b114836a2eee04a284dd3839bd59a2fefb8cdfa74ed" %}
+
+package:
+  name: nng
+  version: "2019.8.12"
+
+source:
+  url: https://github.com/nanomsg/nng/archive/{{ version }}.zip
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  skip: True  # [win and vc<14]
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - cmake >=3.1
+    - ninja
+  host: []  # Empty host dependency section
+
+test:
+  commands:
+    - test -f ${PREFIX}/include/nng/nng.h              # [unix]
+    - test -f ${PREFIX}/lib/cmake/nng/nng-config.cmake # [unix]
+    - test -f ${PREFIX}/bin/nngcat                     # [unix]
+    - if exist %LIBRARY_INC%\nng\nng.h (exit 0) else (exit 1)                  # [win]
+    - if exist %LIBRARY_LIB%\cmake\nng\nng-config.cmake (exit 0) else (exit 1) # [win]
+    - if exist %LIBRARY_BIN%\nngcat (exit 0) else (exit 1)                     # [win]
+
+about:
+  home: https://github.com/nanomsg/nng
+  license: MIT
+  license_file: LICENSE.txt
+  summary: nanomsg-next-generation -- light-weight brokerless messaging
+  description: |
+    This project is a rewrite of the Scalability Protocols library known
+    as libnanomsg, and adds significant new capabilities, while retaining
+    compatibility with the original.
+  doc_url: https://nanomsg.github.io/nng/
+
+extra:
+  recipe-maintainers:
+    - zhihao.yuan
